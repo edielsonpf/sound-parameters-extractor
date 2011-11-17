@@ -1,0 +1,297 @@
+###############################################################
+Softwares escritos em C para Reconhecimento de Fala	
+Edielson Prevato Frigieri				
+Atualização: 07/04/08					
+
+Orientador: Carlos Ynoguti
+
+Diagrama em blocos do sistema implementado:
+
+									
+						  -------------------------Quadros de 20mS----------------------------------------
+	 ================	============	  - =========	   =====      =============  	 ===============      ==========--
+Voz----->=Captura de voz=------>=Pré-Ênfase=----->- =Hamming=----->=FFT=----->=Filtros Mel=----->=Mel Cepstrais=----->=Codebook=----> Voz Quantizada
+	 ================	============	  - =========	   =====      =============	 ===============      ==========--
+						  --------------------------------------------------------------------------------
+
+
+###############################################################
+===============================================================
+Makefile:
+
+Arquivo contendo as regras de compilação
+
+Para limpar a compilação anterior digite:
+
+make clean
+
+Para compilar basta digitar:
+
+make
+===============================================================
+===============================================================
+main.c:
+
+Função principal. Chama todas as outras funcções do sistema
+
+Entrada: void
+Saída: int
+ 
+===============================================================
+===============================================================
+wave_read.c:
+
+Função para abrir arquivos wave.
+
+Parâmetros de entrada:
+char *fNAME => nome do arquivo wave para abrir
+DWORD *fSIZE => variável que receberá o valor do tamanho do dado wave e retornará para função main
+DWORD *Fs => variável que conterá a frequencia de amostragem;
+
+Parâmetros de Saída:
+short * => conteúdo dos dados do arquivo wave.
+
+===============================================================
+===============================================================
+pre_enfase.c:
+
+Aplicar pré-ênfase no sinal wave.
+Filtro passa altas para equalizar o espectro do sinal
+e torná-lo menos suscetível a efeitos de precisão
+finita nos cálculos posteriores.
+
+Parâmetros de entrada:
+float *fDATA => dados wave para pré-ênfase
+float *eDATA => dados após pré-ênfase
+DWORD eSIZE => tamanho do vetor wave
+
+Parâmetros de Saída:
+void
+
+===============================================================
+===============================================================
+tmalloc_int.c:
+
+Testa se memória alocada para variáveis inteiro foi alocado corretamente
+
+Parâmetros de entrada:
+int *ptr => ponteiro para teste
+
+Parâmetros de Saída:
+void
+
+===============================================================
+===============================================================
+tmalloc_float.c:
+
+Testa se memória alocada para variáveis float foi alocado corretamente
+
+Parâmetros de entrada:
+int *ptr => ponteiro para teste
+
+Parâmetros de Saída:
+void
+
+===============================================================
+===============================================================
+tmalloc_double.c:
+
+Testa se memória alocada para variáveis double foi alocado corretamente
+
+Parâmetros de entrada:
+int *ptr => ponteiro para teste
+
+Parâmetros de Saída:
+void
+
+===============================================================
+===============================================================
+hamming.c:
+Gera uma janela de hamming com o tamanho desejado
+
+Parâmetros de entrada:
+float *wHAMMING => vetor para guardar os valores da janela de Hamming;
+DWORD N => número de amostras em 20ms;
+ 
+Parâmetros de Saída:
+void
+===============================================================
+===============================================================
+roundx.c:
+Arredonda para o inteiro mais próximo
+
+Parâmetros de entrada:
+double => valor para arredondar;
+
+Parâmetros de Saída:
+double => valor arredondado;
+===============================================================
+===============================================================
+fft.c:
+Calcula a FFT de N pontos de um dados de entrada e retorna o quadrado do módulo da FFT
+
+Parâmetros de entrada:
+float *temp_DATA => vetor para calculo da FFT
+float *fft_DATA => resultado da FFT
+DWORD fft_SIZE => tamanho da FFT
+DWORD window_SIZE => tamanho do quadro de 20ms
+
+Parâmetros de Saída:
+void
+===============================================================
+===============================================================
+filtros_mel.c:
+Passa o sinal após a FFT no banco de filtros Mel
+
+Parâmetros de entrada:
+double *mel_DATA => dados após os filtros mel que serão retornados para a função chamadora
+double *fft_DATA => dados após a FFT
+int fft_SIZE => tamanho da FFT
+int filtros_SIZE => tamanho do banco de filtros mel
+ 
+Parâmetros de Saída:
+void
+===============================================================
+===============================================================
+mel_cepstaris.c:
+Retona os 12 coeficientes mel cepstrais de cada janela de 20ms
+
+Parâmetros de entrada:
+double *mel_DATA => dados após o banco de filtros mel
+float *mel_ceps_DATA => coeficientes mel cepstrais da janela de 20ms em análise
+int P => número de coeficintes mel cepstrais
+int filtros_SIZE => tamanho do banco de filtros mel
+ 
+Parâmetros de Saída:
+void
+===============================================================
+===============================================================
+Função: calc_nquadros.c
+Calcula o número de quadros de 20ms dos sinal wave
+
+Parâmetros de entrada:
+int wave_SIZE => tamanho dos dados de áudio
+int hamming_wHAMMING => tamanho da janela de Hamming
+ 
+Parâmetros de Saída:
+int nQuadros => retorna o número de quadros de 20ms
+===============================================================
+===============================================================
+Função: coeficientes_mel.c
+Gera os coeficientes Mel Cepstrais
+
+Parâmetros de entrada:
+float **mel_ceps_DATA => matriz com coeficientes mel
+float *wave_PRE => dados do áudio após o pre-ênfase
+DWORD wave_SIZE => tamanho dos dados de áudio
+float *hamming_WINDOW => janela de Hamming
+DWORD hamming_SIZE => tamanho da janela Hamming
+int wave_FS => frequencia de amostragem do sianl wave
+int P => número de coeficientes mel por janela
+ 
+Parâmetros de Saída:
+void
+===============================================================
+===============================================================
+Função: abre_codebook.c
+Abre a matriz com o codebook para teste
+
+Parâmetros de entrada:
+float **codebook_DATA => retorna os dados do codebook
+char *codebook_file_NAME => contém o nome do arquivo com o codebook
+int codebook_SIZE => tamanho do codebook
+int P => profundidade do codebook (mesmo número de elementos dos coeficientes mel cepstrais)
+ 
+Parâmetros de Saída:
+void
+===============================================================
+===============================================================
+Função: compara_codebook.c
+Compara os coeficientes mel cepstrais com a matriz de codebook. Retorna um vetor com os índices de cada vetor da matriz de codebook
+
+Parâmetros de entrada:
+int *vetor => resultado da comparação com os ídices dos vetores
+float **mel_ceps_DATA => dados mel cepstrais
+int nQuadros => número de quadros de 20ms
+float **codebook_DATA => dados do codebook
+int codebook_SIZE => tamanho do codebook
+int P => profundidade do codebook (mesmo número de elementos dos coeficientes mel cepstrais)
+ 
+Parâmetros de Saída:
+void
+===============================================================
+===============================================================
+Função: quantizador.c
+Quantiza os dados do áudio
+
+Parâmetros de entrada:
+int *quantizado_DATA => retorna os o vetor quantizado
+float *float_audio_DATA => dados do aúdio float
+float **codebook_DATA => matriz do codebook
+int hamming_SIZE => tamanho da janela de hamming
+int nQuadros => número de quadros de 20mS do sinal wave
+int audio_SIZE => tamanho do vetor do áudio
+int audio_FS => frequência de amostragem do áudio
+
+Parâmetros de Saída:
+void
+===============================================================
+===============================================================
+Função: forward.c
+Algorítimo forward aplicado ao dado quantizado para reconhecimento
+
+Parâmetros de entrada:
+double **a => matriz de probabilidades de transição de estados 
+double **b => matriz de probabilidades de emissão de símbolos
+int nStates => número de estados da cadeia de MArkov
+int ordem => ordem do codebook (número de símbolos 256)
+int *O => conteúdo da locução (vem dos dados quantizados)
+int length => comprimento da locução 
+double ***alpha1, 
+double *c
+
+Parâmetros de Saída:
+double
+*/
+===============================================================
+===============================================================
+Função: reconhece.c
+Algorítimo para reconhecer palavra
+
+Parâmetros de entrada:
+int locucao_QUANTIZADA => sequencia de observação (dado quantizado)
+int locucao_SIZE => comprimento da sequencia de observação
+
+Parâmetros de Saída:
+int word => retorna palavra reconhecida
+*/
+===============================================================
+===============================================================
+Função: abre_HMM.c
+Abre arquivos HMM
+
+Parâmetros de entrada:
+char nameHMM[] => nome do arquivo com o HMM 
+double ***a1 => matriz de probalidade de transição
+double ***b1 => matriz de probabilidade de emissão de símbolo
+int *nStates1 => número de estados do HMM
+int *order1 => ordem codebook
+ 
+Parâmetros de Saída:
+void
+===============================================================
+===============================================================
+/*
+Função: maior_probabilidade.c
+Retorna posição de maior probabilidade
+
+Parâmetros de entrada:
+double *vector => vetor para comparação
+int size => comprimento do vetor 
+
+Parâmetros de Saída:
+int pos => posição do vetor com maior probabilidade
+*/
+===============================================================
+===============================================================
+

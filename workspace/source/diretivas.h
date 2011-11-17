@@ -1,0 +1,3 @@
+#define	DATA_WINDOW_SIZE 		20			//20ms
+#define	DATA_WINDOW_SCALE		0.001		//ms
+#define	NUMBER_ENERGY_CONTOUR	9
