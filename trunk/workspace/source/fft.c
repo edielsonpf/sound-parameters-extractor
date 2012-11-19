@@ -127,10 +127,10 @@ void fft(double *temp_DATA, double *fft_DATA, int M, int fft_SIZE, int window_SI
 
   	// Calculo do quadrado do modulo da FFT (equivale a energia)
 	/*--------------------------------------------------------------*/
-//	for(k=0; k<fft_SIZE/2; k++)
-//		fft_DATA[k] = Xr[k] * Xr[k] + Xi[k] * Xi[k];
-	for(k=0; k<fft_SIZE; k++)
-		fft_DATA[k] = sqrt(Xr[k] * Xr[k] + Xi[k] * Xi[k]);
+	for(k=0; k<fft_SIZE/2; k++)
+		fft_DATA[k] = Xr[k] * Xr[k] + Xi[k] * Xi[k];
+//	for(k=0; k<fft_SIZE; k++)
+//		fft_DATA[k] = sqrt(Xr[k] * Xr[k] + Xi[k] * Xi[k]);
   	/*--------------------------------------------------------------*/
 
   	// Desalocando ponteiros
