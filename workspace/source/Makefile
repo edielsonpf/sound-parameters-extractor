@@ -6,7 +6,7 @@ CC=gcc
 CFLAGS=-c -Wall
 LDFLAGS= -lm
 
-SOURCES=main.c calc_nquadros.c fft.c hamming.c InterpLinear.c perfil.c pre_enfase.c WaveCtrl.c roundx.c
+SOURCES=main.c calc_nquadros.c fft.c hamming.c MelParameters.c InterpLinear.c PerfilCalc.c pre_enfase.c WaveCtrl.c
 
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=../Debug/parameters-extractor
