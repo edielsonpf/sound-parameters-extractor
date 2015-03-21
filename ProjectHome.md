@@ -1,0 +1,1 @@
+This projects consist in a parameters extractor. It could extract parameter as Energy Contour, Mel Cepstrals and others.
